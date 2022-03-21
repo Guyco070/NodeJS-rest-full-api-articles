@@ -6,7 +6,7 @@ const mongoose = require('mongoose')
 mongoose.connect(`mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@article-api.oqplf.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,{
     useNewUrlParser: true,
     useUnifiedTopology: true
-})//vvfvv
+})
 
 mongoose.connection.on('connected',() => {
     console.log('MongoDB Connected!')
