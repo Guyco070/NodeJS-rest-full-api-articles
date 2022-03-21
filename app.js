@@ -3,7 +3,7 @@ const app = express() // create an express app
 const morgan = require("morgan")
 
 const mongoose = require('mongoose')
-mongoose.connect(`mongodb+srv://Guy:ZeZPHn3HXcW4FAvx@article-api.oqplf.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,{
+mongoose.connect(`mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@article-api.oqplf.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,{
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
