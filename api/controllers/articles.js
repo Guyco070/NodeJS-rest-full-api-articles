@@ -16,7 +16,7 @@ module.exports = {
     },
     getArticle: (req,res) => {
         const articleId = req.params.articleId
-        Article.findById(articleId).then((article) => {
+        Article.populate('categoryId').findById(articleId).then((article) => {
             res.status(200).json({
                 article
             })
@@ -57,26 +57,51 @@ module.exports = {
     updateArticle: (req,res) => {
         const articleId = req.params.articleId
         
-        Article.update({_id: articleId}, req.body).then((article) => {
-            res.status(200).json({
-                message: `Article updated - ${articleId}`
-            })
-        }).catch((error) => {
-            res.status(500).json({
-                error
-            })
+        const { categoryId } = req.body
+        Article.findById(articleId).then((article) =>{
+            if(!article)
+                return res.status(404).json({
+                    message: 'Article not found'
+                })
+        }).then(() => {
+            if(categoryId)
+            {
+                Category.findById(categoryId).then((category) => {
+                    if(!category)
+                        return res.status(404).json({
+                            message: 'Category not found'
+                        })
+        
+                    return  Article.updateOne({_id: articleId}, req.body)
+                }).then((article) => {
+                    res.status(200).json({
+                        message: `Article updated - ${articleId}`
+                    })
+                }).catch((error) => {
+                    res.status(500).json({
+                        error
+                    })
+                })
+            }
         })
     },
     deleteArticle: (req,res) => {
         const articleId = req.params.articleId
-    
-        Article.remove({_id: articleId}).then(() => {
-            res.status(200).json({
-                message: `Article deleted  - ${articleId}`
-            })
-        }).catch((error) => {
-            res.status(500).json({
-                error
+        
+        Article.findById(articleId).then((article) =>{
+            if(!article)
+                return res.status(404).json({
+                    message: 'Article not found'
+                })
+        }).then(() => {
+            Article.deleteOne({_id: articleId}).then(() => {
+                res.status(200).json({
+                    message: `Article deleted  - ${articleId}`
+                })
+            }).catch((error) => {
+                res.status(500).json({
+                    error
+                })
             })
         })
     }

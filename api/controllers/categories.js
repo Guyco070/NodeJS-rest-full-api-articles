@@ -26,7 +26,7 @@ module.exports = {
         }) 
     },
     createCategory: (req,res) => {
-        const { title, description, content } = req.body
+        const { title, description } = req.body
 
         const category = new Category({
             _id: new mongoose.Types.ObjectId(),
@@ -46,27 +46,40 @@ module.exports = {
     },
     updateCategory: (req,res) => {
         const categoryId = req.params.categoryId
-        
-        Category.update({_id: categoryId}, req.body).then((category) => {
-            res.status(200).json({
-                message: `Category updated - ${categoryId}`
-            })
-        }).catch((error) => {
-            res.status(500).json({
-                error
+
+        Category.findById(categoryId).then((category) =>{
+            if(!category)
+                return res.status(404).json({
+                    message: 'Category not found'
+                })
+        }).then(() => {
+            Category.updateOne({_id: categoryId}, req.body).then((category) => {
+                res.status(200).json({
+                    message: `Category updated - ${categoryId}`
+                })
+            }).catch((error) => {
+                res.status(500).json({
+                    error
+                })
             })
         })
     },
     deleteCategory: (req,res) => {
         const categoryId = req.params.categoryId
-    
-        Category.remove({_id: categoryId}).then(() => {
-            res.status(200).json({
-                message: `Category deleted  - ${categoryId}`
-            })
-        }).catch((error) => {
-            res.status(500).json({
-                error
+        Category.findById(categoryId).then((category) =>{
+            if(!category)
+                return res.status(404).json({
+                    message: 'Category not found'
+                })
+        }).then(() => {
+            Category.deleteOne({_id: categoryId}).then(() => {
+                res.status(200).json({
+                    message: `Category deleted  - ${categoryId}`
+                })
+            }).catch((error) => {
+                res.status(500).json({
+                    error
+                })
             })
         })
     }
