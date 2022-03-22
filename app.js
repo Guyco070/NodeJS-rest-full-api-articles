@@ -5,7 +5,7 @@ const morgan = require("morgan") //
 const mongoose = require('mongoose')
 mongoose.connect(`mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@article-api.oqplf.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,{
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
 })
 
 mongoose.connection.on('connected',() => {
