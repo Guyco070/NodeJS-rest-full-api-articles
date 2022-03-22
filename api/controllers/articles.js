@@ -1,9 +1,10 @@
 const { default: mongoose } = require('mongoose')
 const Article = require('../models/article')
+const Category = require('../models/category')
 
 module.exports = {
     getAllArticles: (req,res) => {
-        Article.find().then((articles) => {
+        Article.find().populate('categoryId',"title").then((articles) => {
             res.status(200).json({
                 articles
             })
@@ -12,7 +13,6 @@ module.exports = {
                 error
             })
         })
-        
     },
     getArticle: (req,res) => {
         const articleId = req.params.articleId
@@ -24,20 +24,26 @@ module.exports = {
             res.status(500).json({
                 error
             })
-        })
-        
+        }) 
     },
     createArticle: (req,res) => {
-        const { title, description, content } = req.body
+        const { title, description, content ,categoryId} = req.body
 
-        const article = new Article({
-            _id: new mongoose.Types.ObjectId(),
-            title,
-            description,
-            content
-        })
+        Category.findById(categoryId).then((category) => {
+            if(!category)
+                return res.status(404).json({
+                    message: 'Category not found'
+                })
+            const article = new Article({
+                _id: new mongoose.Types.ObjectId(),
+                title,
+                description,
+                content,
+                categoryId
+            })
 
-        article.save().then(() => {
+            return article.save()
+        }).then(() => {
             res.status(200).json({
                 message: 'Article created'
             })
@@ -47,6 +53,7 @@ module.exports = {
             })
         })
     },
+
     updateArticle: (req,res) => {
         const articleId = req.params.articleId
         
@@ -59,7 +66,6 @@ module.exports = {
                 error
             })
         })
-        
     },
     deleteArticle: (req,res) => {
         const articleId = req.params.articleId
@@ -73,6 +79,5 @@ module.exports = {
                 error
             })
         })
-        
     }
 }
