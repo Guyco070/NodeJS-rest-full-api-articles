@@ -27,8 +27,11 @@ module.exports = {
         }) 
     },
     createArticle: (req,res) => {
-        const { title, description, content ,categoryId} = req.body
+        const { path: image} = req.file
 
+        const { title, description, content ,categoryId,} = req.body
+
+        console.log(description)
         Category.findById(categoryId).then((category) => {
             if(!category)
                 return res.status(404).json({
@@ -39,7 +42,8 @@ module.exports = {
                 title,
                 description,
                 content,
-                categoryId
+                categoryId,
+                image: image.replace('\\','/')
             })
 
             return article.save()
