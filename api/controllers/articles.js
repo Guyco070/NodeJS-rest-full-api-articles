@@ -67,7 +67,6 @@ module.exports = {
                 return res.status(404).json({
                     message: 'Article not found'
                 })
-        }).then(() => {
             if(categoryId)
             {
                 Category.findById(categoryId).then((category) => {
@@ -75,19 +74,19 @@ module.exports = {
                         return res.status(404).json({
                             message: 'Category not found'
                         })
-        
-                    return  Article.updateOne({_id: articleId}, req.body)
-                }).then((article) => {
-                    res.status(200).json({
-                        message: `Article updated - ${articleId}`
                     })
+            }
+            return  Article.updateOne({_id: articleId}, req.body).then(() => {
+                res.status(200).json({
+                    message: `Article updated - ${articleId}`
+                })
                 }).catch((error) => {
                     res.status(500).json({
                         error
                     })
                 })
-            }
-        })
+            })
+
     },
     deleteArticle: (req,res) => {
         const articleId = req.params.articleId

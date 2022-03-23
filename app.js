@@ -1,6 +1,8 @@
 const express = require("express")
 const app = express() // create an express app
 const morgan = require("morgan") //
+const checkAuth = require('./api/middlewares/checkAuth')
+
 
 const mongoose = require('mongoose')
 mongoose.connect(`mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@article-api.oqplf.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,{
@@ -35,7 +37,7 @@ app.use((req, res, next) => {
 
 // Routes
 app.use('/articles',articlesRoutes)
-app.use('/categories',categoryRoutes)
+app.use('/categories',checkAuth ,categoryRoutes)
 app.use('/users',usersRoutes)
 
 
